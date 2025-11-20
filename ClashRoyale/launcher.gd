@@ -13,10 +13,10 @@ func _ready() -> void:
 			is_server_mode = true
 			break
 	
-	# Load appropriate scene
+	# Load appropriate scene - use call_deferred to avoid "parent busy" error
 	if is_server_mode:
 		print("Starting in SERVER mode...")
-		get_tree().change_scene_to_file("res://ClashRoyale/UI/Server/server_host.tscn")
+		get_tree().change_scene_to_file.call_deferred("res://ClashRoyale/UI/Server/server_host.tscn")
 	else:
 		print("Starting in CLIENT mode...")
-		get_tree().change_scene_to_file("res://ClashRoyale/UI/Client/client_menu.tscn")
+		get_tree().change_scene_to_file.call_deferred("res://ClashRoyale/UI/Client/client_menu.tscn")

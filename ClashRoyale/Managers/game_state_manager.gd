@@ -76,13 +76,13 @@ func join_matchmaking(ip_address: String, username: String) -> void:
 func start_game_server() -> void:
 	if current_state != GameState.SERVER_MATCHMAKING:
 		return
-	get_tree().change_scene_to_file("res://ClashRoyale/Arena/arena.tscn")
+	get_tree().change_scene_to_file.call_deferred("res://ClashRoyale/Arena/arena.tscn")
 	current_state = GameState.SERVER_SETUP
 	
 func start_game_host() -> void:
 	if current_state != GameState.HOST_MATCHMAKING:
 		return
-	get_tree().change_scene_to_file("res://ClashRoyale/Arena/arena.tscn")
+	get_tree().change_scene_to_file.call_deferred("res://ClashRoyale/Arena/arena.tscn")
 	current_state = GameState.HOST_SETUP
 
 func client_start_loading() -> void:
@@ -94,7 +94,7 @@ func client_start_loading() -> void:
 func client_game_started() -> void:
 	if current_state != GameState.CLIENT_LOADING:
 		return
-	get_tree().change_scene_to_file("res://ClashRoyale/Arena/arena.tscn")
+	get_tree().change_scene_to_file.call_deferred("res://ClashRoyale/Arena/arena.tscn")
 	current_state = GameState.GAME_CLIENT
 
 func server_game_ready() -> void:
