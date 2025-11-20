@@ -187,13 +187,24 @@ func _on_attack_timer_timeout() -> void:
 	is_attacking = false
 
 func move_towards_enemy_bridge() -> void:
-	# Determine which direction to move based on owner
-	# Player 1 (bottom) moves up, Player 2 (top) moves down
-	if owner_player_id == 1 or owner_player_id == network_manager.local_player_id:
-		# Move up
+	# Server determines movement direction
+	# On server: lower player ID moves up (-Y), higher player ID moves down (+Y)
+	if network_manager == null or not network_manager.is_host:
+		return
+	
+	# Get opponent player ID
+	var opponent_id = 0
+	for pid in network_manager.connected_players.keys():
+		if pid != owner_player_id:
+			opponent_id = pid
+			break
+	
+	# Move towards opponent's side
+	if opponent_id > owner_player_id:
+		# Opponent has higher ID, move up (negative Y)
 		velocity = Vector2(0, -move_speed)
 	else:
-		# Move down
+		# Opponent has lower ID, move down (positive Y)
 		velocity = Vector2(0, move_speed)
 
 ##################################################################################################
