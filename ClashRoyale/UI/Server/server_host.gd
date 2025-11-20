@@ -51,8 +51,10 @@ func _setup_managers() -> void:
 	network_manager.match_ready.connect(_on_match_ready)
 
 func _start_server() -> void:
-	# Start dedicated server
-	game_state_manager.start_server_matchmaking()
+	# Start dedicated server - directly setup without scene change
+	# Server host scene is already the server, no need to change scenes
+	game_state_manager.current_state = game_state_manager.GameState.SERVER_MATCHMAKING
+	network_manager.setup_server_matchmaking()
 	
 	# Set as dedicated server
 	network_manager.is_server = true

@@ -27,37 +27,47 @@ var network_manager: NetworkManager = null
 # Menu functions
 ##################################################################################################
 
-func start_server_matchmaking() -> void:
-	if current_state != GameState.MAIN_MENU:
-		return
-	get_tree().change_scene_to_file("res://ClashRoyale/UI/Matchmaking/matchmaking_lobby.tscn")
-	current_state = GameState.SERVER_MATCHMAKING
-	if network_manager != null:
-		network_manager.setup_server_matchmaking()
-	
-func start_host_matchmaking(username: String) -> void:
-	if current_state != GameState.MAIN_MENU:
-		return
-	get_tree().change_scene_to_file("res://ClashRoyale/UI/Matchmaking/matchmaking_lobby.tscn")
-	current_state = GameState.HOST_MATCHMAKING
-	if network_manager != null:
-		network_manager.setup_host_matchmaking(username)
+# NOTE: The following functions reference old UI/Matchmaking scenes which are not used
+# in the current Client/Server architecture. The launcher.tscn loads either:
+# - ClashRoyale/UI/Client/client_menu.tscn (for clients)
+# - ClashRoyale/UI/Server/server_host.tscn (for server)
+# These functions are kept for reference but should not be called.
 
+# DEPRECATED: Use launcher.tscn -> server_host.tscn instead
+#func start_server_matchmaking() -> void:
+#	if current_state != GameState.MAIN_MENU:
+#		return
+#	get_tree().change_scene_to_file("res://ClashRoyale/UI/Matchmaking/matchmaking_lobby.tscn")
+#	current_state = GameState.SERVER_MATCHMAKING
+#	if network_manager != null:
+#		network_manager.setup_server_matchmaking()
+
+# DEPRECATED: Use launcher.tscn -> client_menu.tscn instead
+#func start_host_matchmaking(username: String) -> void:
+#	if current_state != GameState.MAIN_MENU:
+#		return
+#	get_tree().change_scene_to_file("res://ClashRoyale/UI/Matchmaking/matchmaking_lobby.tscn")
+#	current_state = GameState.HOST_MATCHMAKING
+#	if network_manager != null:
+#		network_manager.setup_host_matchmaking(username)
+
+# Used by client_menu.gd - connects to server
 func join_matchmaking(ip_address: String, username: String) -> void:
 	if current_state != GameState.MAIN_MENU:
 		return
-	get_tree().change_scene_to_file("res://ClashRoyale/UI/Matchmaking/matchmaking_lobby.tscn")
+	# Client menu handles its own UI, just update state and call network manager
 	current_state = GameState.CLIENT_MATCHMAKING
 	if network_manager != null:
 		network_manager.join_matchmaking(ip_address, username)
 
-func quit_to_menu() -> void:
-	if current_state not in [GameState.SERVER_MATCHMAKING, GameState.CLIENT_MATCHMAKING, GameState.HOST_MATCHMAKING]:
-		return
-	get_tree().change_scene_to_file("res://ClashRoyale/UI/Matchmaking/main_menu.tscn")
-	current_state = GameState.MAIN_MENU
-	if network_manager != null:
-		network_manager.reset()
+# DEPRECATED: Not used in current architecture
+#func quit_to_menu() -> void:
+#	if current_state not in [GameState.SERVER_MATCHMAKING, GameState.CLIENT_MATCHMAKING, GameState.HOST_MATCHMAKING]:
+#		return
+#	get_tree().change_scene_to_file("res://ClashRoyale/UI/Matchmaking/main_menu.tscn")
+#	current_state = GameState.MAIN_MENU
+#	if network_manager != null:
+#		network_manager.reset()
 
 ##################################################################################################
 # Game setup functions
