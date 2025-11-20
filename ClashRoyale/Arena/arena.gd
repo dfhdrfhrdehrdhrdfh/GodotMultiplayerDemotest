@@ -61,24 +61,31 @@ func _ready() -> void:
 	elixir_timer.start()
 
 func _setup_managers() -> void:
-	# Create manager nodes
-	network_manager = NetworkManager.new()
-	network_manager.name = "NetworkManager"
-	add_child(network_manager)
-	
-	clock_sync = ClockSync.new()
-	clock_sync.name = "ClockSync"
-	add_child(clock_sync)
-	
-	game_state_manager = GameStateManager.new()
-	game_state_manager.name = "GameStateManager"
-	add_child(game_state_manager)
-	
-	# Link references
-	network_manager.clock_sync = clock_sync
-	network_manager.game_state_manager = game_state_manager
-	clock_sync.network_manager = network_manager
-	game_state_manager.network_manager = network_manager
+	# Get managers from /root (they should already exist from previous scenes)
+	# This ensures consistent RPC paths without using autoloads
+	if get_tree().root.has_node("NetworkManager"):
+		network_manager = get_tree().root.get_node("NetworkManager")
+		clock_sync = get_tree().root.get_node("ClockSync")
+		game_state_manager = get_tree().root.get_node("GameStateManager")
+	else:
+		# Fallback: create if they don't exist (shouldn't happen in normal flow)
+		network_manager = NetworkManager.new()
+		network_manager.name = "NetworkManager"
+		get_tree().root.add_child(network_manager)
+		
+		clock_sync = ClockSync.new()
+		clock_sync.name = "ClockSync"
+		get_tree().root.add_child(clock_sync)
+		
+		game_state_manager = GameStateManager.new()
+		game_state_manager.name = "GameStateManager"
+		get_tree().root.add_child(game_state_manager)
+		
+		# Link references
+		network_manager.clock_sync = clock_sync
+		network_manager.game_state_manager = game_state_manager
+		clock_sync.network_manager = network_manager
+		game_state_manager.network_manager = network_manager
 	
 	# Get local player ID
 	local_player_id = network_manager.local_player_id
