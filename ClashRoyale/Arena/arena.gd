@@ -146,17 +146,17 @@ func _create_towers() -> void:
 	
 	# Each player always sees their own towers at bottom and enemy towers at top
 	# Local player towers (bottom - friendly)
-	var local_left_tower = TowerScene.instantiate() if TowerScene != null else TowerBase.new()
+	var local_left_tower = TowerScene.instantiate()
 	local_left_tower.name = "LocalLeftTower"
 	local_left_tower.initialize(1 + (local_player_id - 1) * 3, local_player_id, Vector2(-150, 300), "princess", network_manager)
 	add_child(local_left_tower)
 	
-	var local_right_tower = TowerScene.instantiate() if TowerScene != null else TowerBase.new()
+	var local_right_tower = TowerScene.instantiate()
 	local_right_tower.name = "LocalRightTower"
 	local_right_tower.initialize(2 + (local_player_id - 1) * 3, local_player_id, Vector2(150, 300), "princess", network_manager)
 	add_child(local_right_tower)
 	
-	var local_king_tower = TowerScene.instantiate() if TowerScene != null else TowerBase.new()
+	var local_king_tower = TowerScene.instantiate()
 	local_king_tower.name = "LocalKingTower"
 	local_king_tower.initialize(3 + (local_player_id - 1) * 3, local_player_id, Vector2(0, 350), "king", network_manager)
 	add_child(local_king_tower)
@@ -169,17 +169,17 @@ func _create_towers() -> void:
 	# Enemy towers (top - hostile)
 	var enemy_player_id = network_manager.opponent_player_id if network_manager.opponent_player_id != 0 else (3 - local_player_id)
 	
-	var enemy_left_tower = TowerScene.instantiate() if TowerScene != null else TowerBase.new()
+	var enemy_left_tower = TowerScene.instantiate()
 	enemy_left_tower.name = "EnemyLeftTower"
 	enemy_left_tower.initialize(1 + (enemy_player_id - 1) * 3, enemy_player_id, Vector2(-150, -300), "princess", network_manager)
 	add_child(enemy_left_tower)
 	
-	var enemy_right_tower = TowerScene.instantiate() if TowerScene != null else TowerBase.new()
+	var enemy_right_tower = TowerScene.instantiate()
 	enemy_right_tower.name = "EnemyRightTower"
 	enemy_right_tower.initialize(2 + (enemy_player_id - 1) * 3, enemy_player_id, Vector2(150, -300), "princess", network_manager)
 	add_child(enemy_right_tower)
 	
-	var enemy_king_tower = TowerScene.instantiate() if TowerScene != null else TowerBase.new()
+	var enemy_king_tower = TowerScene.instantiate()
 	enemy_king_tower.name = "EnemyKingTower"
 	enemy_king_tower.initialize(3 + (enemy_player_id - 1) * 3, enemy_player_id, Vector2(0, -350), "king", network_manager)
 	add_child(enemy_king_tower)
@@ -307,7 +307,7 @@ func _on_troop_spawned_client(troop_data: Dictionary) -> void:
 
 func _spawn_troop(troop_data: Dictionary) -> void:
 	var TroopScene = preload("res://ClashRoyale/Units/troop_base.tscn")
-	var troop = TroopScene.instantiate() if TroopScene != null else TroopBase.new()
+	var troop = TroopScene.instantiate()
 	
 	var spawn_position = troop_data["position"]
 	var is_local = (troop_data["player_id"] == local_player_id)

@@ -5,7 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_troop"]
 size = Vector2(30, 30)
 
-[node name="TroopBase" type="CharacterBody2D"]
+[node name="Troop" type="CharacterBody2D"]
 collision_layer = 4
 collision_mask = 6
 script = ExtResource("1")
