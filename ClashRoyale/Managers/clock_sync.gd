@@ -82,10 +82,10 @@ func client_receive_sync_packet(client_time: int, server_tick: int) -> void:
 	last_offsets.push_front(calc_offset(Time.get_ticks_msec(), client_time, server_tick, tick, ideal_client_tick_buffer, min_client_server_tick_diff, max_client_server_tick_diff))
 	
 	if len(last_offsets) > averaging_sample_size:
-		var sum := 0
+		var sum := 0.0
 		for each: int in last_offsets:
 			sum += each
-		tick_adjustment = int(ceil((sum / len(last_offsets))))
+		tick_adjustment = int(ceil((sum / float(len(last_offsets)))))
 		last_offsets = []
 
 func calc_offset(local_time_ms: int,

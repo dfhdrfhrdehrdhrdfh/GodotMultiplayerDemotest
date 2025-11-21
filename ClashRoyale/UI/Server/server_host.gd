@@ -58,6 +58,9 @@ func _setup_managers() -> void:
 	network_manager.match_ready.connect(_on_match_ready)
 
 func _start_server() -> void:
+	# Wait for next frame to ensure all nodes are ready in the tree
+	await get_tree().process_frame
+	
 	# Start dedicated server - directly setup without scene change
 	# Server host scene is already the server, no need to change scenes
 	game_state_manager.current_state = game_state_manager.GameState.SERVER_MATCHMAKING
