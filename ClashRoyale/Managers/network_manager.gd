@@ -62,10 +62,9 @@ var game_state_manager: Node = null
 ##################################################################################################
 
 func reset() -> void:
-	var mp = get_tree().get_multiplayer() if get_tree() else null
-	if mp and mp.multiplayer_peer != null:
-		mp.multiplayer_peer.close()
-		mp.multiplayer_peer = null
+	if multiplayer.multiplayer_peer != null:
+		multiplayer.multiplayer_peer.close()
+		multiplayer.multiplayer_peer = null
 	username = ""
 	connected_players = {}
 	troops_dict = {}
@@ -78,23 +77,14 @@ func reset() -> void:
 ##################################################################################################
 
 func join_matchmaking(ip_address: String, username_: String) -> void:
-	# Ensure we're in the tree before accessing multiplayer singleton
-	if not is_inside_tree():
-		await ready
-	
 	var peer := ENetMultiplayerPeer.new()
 	var error = peer.create_client(ip_address, PORT)
 	if error != OK:
 		matchmaking_status_updated.emit("Failed to connect to server")
 		return
-	
-	# Access multiplayer via get_tree() to be safe
-	if get_tree() and get_tree().get_multiplayer():
-		get_tree().get_multiplayer().multiplayer_peer = peer
-		username = username_
-		matchmaking_status_updated.emit("Connecting to server...")
-	else:
-		matchmaking_status_updated.emit("ERROR: Cannot access multiplayer - node not in tree!")
+	multiplayer.multiplayer_peer = peer
+	username = username_
+	matchmaking_status_updated.emit("Connecting to server...")
 	
 @rpc("authority", "call_local", "reliable")
 func client_matchmaking_success(player_id: int, opponent_id: int) -> void:
@@ -128,8 +118,7 @@ func request_spawn_troop(card_id: int, spawn_position: Vector2) -> void:
 func server_spawn_troop(card_id: int, spawn_position: Vector2) -> void:
 	if not is_host:
 		return
-	var mp = get_tree().get_multiplayer()
-	var player_id = mp.get_remote_sender_id() if mp else 0
+	var player_id = multiplayer.get_remote_sender_id()
 	_spawn_troop_on_server(player_id, card_id, spawn_position)
 
 func _spawn_troop_on_server(player_id: int, card_id: int, spawn_position: Vector2) -> void:
@@ -185,10 +174,6 @@ func receive_game_state(game_state_data: Dictionary) -> void:
 ##################################################################################################
 
 func setup_multiplayer_server() -> void:
-	# Ensure we're in the tree before accessing multiplayer singleton
-	if not is_inside_tree():
-		await ready
-	
 	is_host = true
 	var peer := ENetMultiplayerPeer.new()
 	var error = peer.create_server(PORT, MAX_CLIENTS)
@@ -197,13 +182,8 @@ func setup_multiplayer_server() -> void:
 		return
 	peer.peer_connected.connect(_on_peer_connected_to_matchmaking)
 	peer.peer_disconnected.connect(_on_peer_disconnected_from_matchmaking)
-	
-	# Access multiplayer via get_tree() to be safe
-	if get_tree() and get_tree().get_multiplayer():
-		get_tree().get_multiplayer().multiplayer_peer = peer
-		print("Server started on port ", PORT)
-	else:
-		print("ERROR: Cannot access multiplayer - node not in tree!")
+	multiplayer.multiplayer_peer = peer
+	print("Server started on port ", PORT)
 
 func setup_server_matchmaking() -> void:
 	setup_multiplayer_server()
@@ -242,8 +222,7 @@ func request_client_username() -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func send_username_to_server(client_username: String) -> void:
-	var mp = get_tree().get_multiplayer()
-	var sender_id = mp.get_remote_sender_id() if mp else 0
+	var sender_id = multiplayer.get_remote_sender_id()
 	if sender_id in connected_players:
 		connected_players[sender_id]["username"] = client_username
 		player_connected_to_matchmaking.emit(sender_id, client_username)

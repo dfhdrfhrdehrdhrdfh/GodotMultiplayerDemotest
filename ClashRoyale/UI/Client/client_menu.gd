@@ -23,30 +23,24 @@ func _ready() -> void:
 	_create_ui()
 
 func _setup_managers() -> void:
-	# Check if managers already exist in /root (from previous scene)
-	if get_tree().root.has_node("NetworkManager"):
-		network_manager = get_tree().root.get_node("NetworkManager")
-		clock_sync = get_tree().root.get_node("ClockSync")
-		game_state_manager = get_tree().root.get_node("GameStateManager")
-	else:
-		# Create manager nodes and add to /root for persistence and consistent RPC paths
-		network_manager = NetworkManager.new()
-		network_manager.name = "NetworkManager"
-		get_tree().root.add_child(network_manager)
-		
-		clock_sync = ClockSync.new()
-		clock_sync.name = "ClockSync"
-		get_tree().root.add_child(clock_sync)
-		
-		game_state_manager = GameStateManager.new()
-		game_state_manager.name = "GameStateManager"
-		get_tree().root.add_child(game_state_manager)
-		
-		# Link references
-		network_manager.clock_sync = clock_sync
-		network_manager.game_state_manager = game_state_manager
-		clock_sync.network_manager = network_manager
-		game_state_manager.network_manager = network_manager
+	# Create manager nodes as children of this scene (like original working version)
+	network_manager = NetworkManager.new()
+	network_manager.name = "NetworkManager"
+	add_child(network_manager)
+	
+	clock_sync = ClockSync.new()
+	clock_sync.name = "ClockSync"
+	add_child(clock_sync)
+	
+	game_state_manager = GameStateManager.new()
+	game_state_manager.name = "GameStateManager"
+	add_child(game_state_manager)
+	
+	# Link references
+	network_manager.clock_sync = clock_sync
+	network_manager.game_state_manager = game_state_manager
+	clock_sync.network_manager = network_manager
+	game_state_manager.network_manager = network_manager
 	
 	# Connect signals
 	network_manager.matchmaking_status_updated.connect(_on_status_updated)
